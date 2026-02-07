@@ -12,7 +12,7 @@ from eth_account.messages import encode_typed_data
 from dotenv import load_dotenv
 from datetime import datetime
 from colorama import *
-import asyncio, random, time, pytz, sys, re, os
+import asyncio, random, time, pytz, json, sys, re, os
 
 load_dotenv()
 
@@ -22,7 +22,7 @@ class QuietFinance:
     def __init__(self) -> None:
         self.API_URL = {
             "testnet": "https://testnet-api.quiet.finance",
-            "rpc": "https://ethereum-sepolia-public.nodies.app",
+            "rpc": "https://ethereum-sepolia-rpc.publicnode.com",
             "explorer": "https://sepolia.etherscan.io/tx/",
         }
 
@@ -1052,8 +1052,19 @@ class QuietFinance:
 
                 async with ClientSession(connector=connector, timeout=ClientTimeout(total=60)) as session:
                     async with session.post(url=url, headers=headers, params=params, proxy=proxy, proxy_auth=proxy_auth) as response:
+                        result = await response.text()
+
+                        if response.status == 400:
+                            err_msg = json.loads(result).get("detail", "Failed to Claim")
+                            self.log(
+                                f"{Fore.MAGENTA+Style.BRIGHT} ● {Style.RESET_ALL}"
+                                f"{Fore.WHITE+Style.BRIGHT}{task_id}{Style.RESET_ALL}"
+                                f"{Fore.YELLOW+Style.BRIGHT} {err_msg} {Style.RESET_ALL}"
+                            )
+                            return None
+                        
                         await self.ensure_ok(response)
-                        return await response.text()
+                        return result
             except (Exception, ClientResponseError) as e:
                 if attempt < retries - 1:
                     await asyncio.sleep(5)
@@ -1094,13 +1105,16 @@ class QuietFinance:
 
         self.log(f"{Fore.CYAN+Style.BRIGHT}Stats   :{Style.RESET_ALL}")
 
-        activity_points = stats.get("activity_points")
-        user_rank = stats.get("rank")
+        activity_points = stats.get("activity_points", 0)
+        referral_points = stats.get("referral_points", 0)
+        user_rank = stats.get("rank", "N/A")
+
+        total_points = activity_points + referral_points
 
         self.log(
             f"{Fore.MAGENTA+Style.BRIGHT} ● {Style.RESET_ALL}"
             f"{Fore.GREEN+Style.BRIGHT}Points:{Style.RESET_ALL}"
-            f"{Fore.WHITE+Style.BRIGHT} {activity_points} {Style.RESET_ALL}"
+            f"{Fore.WHITE+Style.BRIGHT} {total_points} {Style.RESET_ALL}"
         )
         self.log(
             f"{Fore.MAGENTA+Style.BRIGHT} ● {Style.RESET_ALL}"

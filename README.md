@@ -22,7 +22,7 @@
 
 Quiet Finance BOT is an automated tool designed to airdrop farming across multiple accounts. It provides seamless offers robust proxy support for enhanced security and reliability.
 
-**🔗 Get Started:** [Register on Quiet Finance Testnet](https://testnet.quiet.finance/ref/43g4wu)
+**🔗 Get Started:** [Register on Quiet Finance Testnet](https://testnet.quiet.finance/ref/4zFiLy)
 
 > **Important:** Sign-Up with new evm wallet.
 
