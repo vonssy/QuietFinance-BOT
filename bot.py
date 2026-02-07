@@ -187,9 +187,9 @@ class QuietFinance:
             }
         ]
 
-        self.MINT_AMOUNT = float(os.getenv("USDC_AMOUNT", 100))
-        self.DEPOSIT_AMOUNT = float(os.getenv("qUSD_AMOUNT", 50))
-        self.WITHDRAW_AMOUNT = float(os.getenv("sqUSD_AMOUNT", 25))
+        self.MINT_AMOUNT = float(os.getenv("USDC_AMOUNT") or "100")
+        self.DEPOSIT_AMOUNT = float(os.getenv("qUSD_AMOUNT") or "50")
+        self.WITHDRAW_AMOUNT = float(os.getenv("sqUSD_AMOUNT") or "25")
 
         self.REF_CODE = "4zFiLy" # U can change it with yours.
         self.USE_PROXY = False
